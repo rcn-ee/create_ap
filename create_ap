@@ -1292,6 +1292,12 @@ if [[ "$SHARE_METHOD" != "nat" && "$SHARE_METHOD" != "bridge" && "$SHARE_METHOD"
     exit 1
 fi
 
+if [[ ! -n "$NEW_MACADDR" ]]; then
+    if [ -f /etc/wlan0-mac ] ; then
+        NEW_MACADDR=$(cat /etc/wlan0-mac)
+    fi
+fi
+
 if [[ -n "$NEW_MACADDR" ]]; then
     if ! is_macaddr "$NEW_MACADDR"; then
         echo "ERROR: '${NEW_MACADDR}' is not a valid MAC address" >&2
