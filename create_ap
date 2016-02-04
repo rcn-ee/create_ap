@@ -1575,12 +1575,18 @@ else
     if [[ "$DHCP_DNS" == "gateway" ]]; then
         DHCP_DNS="$GATEWAY"
     fi
-    cat << EOF > $CONFDIR/dnsmasq.conf
+    if [ -f /etc/dnsmasq.d/usb0-dhcp ] ; then
+        cat /etc/dnsmasq.d/usb0-dhcp > $CONFDIR/dnsmasq.conf
+    else
+        touch $CONFDIR/dnsmasq.conf
+    fi
+    cat << EOF >> $CONFDIR/dnsmasq.conf
+
 listen-address=${GATEWAY}
 ${DNSMASQ_BIND}
-dhcp-range=${GATEWAY%.*}.1,${GATEWAY%.*}.254,255.255.255.0,24h
-dhcp-option-force=option:router,${GATEWAY}
-dhcp-option-force=option:dns-server,${DHCP_DNS}
+dhcp-range=wifi,${GATEWAY%.*}.1,${GATEWAY%.*}.254,255.255.255.0,24h
+dhcp-option-force=wifi,option:router,${GATEWAY}
+dhcp-option-force=wifi,option:dns-server,${DHCP_DNS}
 EOF
     MTU=$(get_mtu $INTERNET_IFACE)
     [[ -n "$MTU" ]] && echo "dhcp-option-force=option:mtu,${MTU}" >> $CONFDIR/dnsmasq.conf
@@ -1590,6 +1596,7 @@ EOF
 address=/#/$GATEWAY
 EOF
     fi
+    cp $CONFDIR/dnsmasq.conf /tmp/dnsmasq.conf
 fi
 
 # initialize WiFi interface
@@ -1711,6 +1718,8 @@ if [[ "$SHARE_METHOD" != "bridge" ]]; then
         # remove restriction.
         complain dnsmasq
     fi
+
+    systemctl stop dnsmasq || true
 
     umask 0033
     dnsmasq -C $CONFDIR/dnsmasq.conf -x $CONFDIR/dnsmasq.pid -l $CONFDIR/dnsmasq.leases -p $DNS_PORT || die

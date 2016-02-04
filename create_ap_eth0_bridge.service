@@ -1,10 +1,10 @@
 [Unit]
-Description=Create AP Service
+Description=Create AP eth0 Bridge Service
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/create_ap -n -g 10.0.0.1 wlan0 BeagleBone BeagleBone
+ExecStart=/usr/bin/create_ap -m bridge wlan0 eth0 BeagleBone BeagleBone
 KillSignal=SIGINT
 Restart=on-failure
 RestartSec=5

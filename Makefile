@@ -5,10 +5,12 @@ all:
 install:
 	cp create_ap /usr/bin/create_ap
 	[ ! -d /lib/systemd/system ] || cp create_ap.service /lib/systemd/system
+	[ ! -d /lib/systemd/system ] || cp create_ap_eth0_bridge.service /lib/systemd/system
 	mkdir -p /usr/share/bash-completion/completions
 	cp bash_completion /usr/share/bash-completion/completions/create_ap
 
 uninstall:
 	rm /usr/bin/create_ap
 	[ ! -f /lib/systemd/system/create_ap.service ] || rm /lib/systemd/system/create_ap.service
+	[ ! -f /lib/systemd/system/create_ap_eth0_bridge.service ] || rm /lib/systemd/system/create_ap_eth0_bridge.service
 	rm /usr/share/bash-completion/completions/create_ap
