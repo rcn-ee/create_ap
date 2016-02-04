@@ -82,6 +82,13 @@ Using the persistent [systemd](https://wiki.archlinux.org/index.php/systemd#Basi
 ### Start on boot:
     systemctl enable create_ap
 
+## Systemd service
+Using the persistent [systemd](https://wiki.archlinux.org/index.php/systemd#Basic_systemctl_usage) service
+### Start service immediately:
+    systemctl start create_ap_eth0_bridge
+
+### Start on boot:
+    systemctl enable create_ap_eth0_bridge
 
 ## License
 FreeBSD
